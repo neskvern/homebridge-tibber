@@ -13,3 +13,6 @@ This is a [Homebridge](https://github.com/nfarina/homebridge) plugin getting Tib
     "homeId": "<insert your homeId xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"
 }
 ```
+# Info
+Uses special characteristics of the eve power outlet. Apples Home app does not show special characteristic, power consumption
+will only be displayed in apps supporting this (Eve app, Home+ etc.).
