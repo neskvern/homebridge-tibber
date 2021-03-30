@@ -82,7 +82,7 @@ function TibberPowerConsumptionAccessory(log, config) {
         self.service.getCharacteristic(EvePowerConsumption).setValue(self.powerConsumption, undefined, undefined);
         
         self.totalPowerConsumption = parseFloat(data.accumulatedConsumption.toString());
-        self.service.getCharacteristic(EvePowerConsumption).setValue(self.totalPowerConsumption, undefined, undefined);
+        self.service.getCharacteristic(EveTotalPowerConsumption).setValue(self.totalPowerConsumption, undefined, undefined);
     });
 
     tibberFeed.on('connected', data => {
