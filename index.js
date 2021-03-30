@@ -5,14 +5,18 @@ const TibberFeed = require("tibber-api").TibberFeed;
 var inherits = require('util').inherits;
 var Service, Characteristic;
 
+var FakeGatoHistoryService;
+
 module.exports = function (homebridge) {
     Service = homebridge.hap.Service;
     Characteristic = homebridge.hap.Characteristic;
 
+    FakeGatoHistoryService = require('fakegato-history')(homebridge);
+    
     homebridge.registerAccessory('homebridge-tibber', 'tibber-power-consumption', TibberPowerConsumptionAccessory);
 };
 
-function TibberPowerConsumptionAccessory(log, config) {
+function TibberPowerConsumptionAccessory(log, config) {    
     this.log = log;
     this.name = config['name'];
     this.options = {
@@ -60,18 +64,19 @@ function TibberPowerConsumptionAccessory(log, config) {
     };
     inherits(EveTotalPowerConsumption, Characteristic);
 
+    this.loggingService = new FakeGatoHistoryService("energy", this, { storage: 'fs' });
+	
     var PowerMeterService = function(displayName, subtype) {
         Service.call(this, displayName, '00000001-0000-1777-8000-775D67EC4377', subtype);
         this.addCharacteristic(EvePowerConsumption);
         this.addOptionalCharacteristic(EveTotalPowerConsumption);
     };
-
     inherits(PowerMeterService, Service);
 
-    this.service = new PowerMeterService(this.options['name']);
+    this.service = new PowerMeterService(this.name);
     this.service.getCharacteristic(EvePowerConsumption).on('get', this.getPowerConsumption.bind(this));
     this.service.addCharacteristic(EveTotalPowerConsumption).on('get', this.getTotalPowerConsumption.bind(this));
-
+    
     var self = this;
 
     const tibberFeed = new TibberFeed(self.options);
@@ -80,9 +85,11 @@ function TibberPowerConsumptionAccessory(log, config) {
     tibberFeed.on('data', data => {
         self.powerConsumption = parseFloat(data.power.toString());
         self.service.getCharacteristic(EvePowerConsumption).setValue(self.powerConsumption, undefined, undefined);
-        
+        self.loggingService.addEntry({time: Math.round(new Date().valueOf() / 1000), power: self.powerConsumption});
+
         self.totalPowerConsumption = parseFloat(data.accumulatedConsumption.toString());
         self.service.getCharacteristic(EveTotalPowerConsumption).setValue(self.totalPowerConsumption, undefined, undefined);
+
     });
 
     tibberFeed.on('connected', data => {
@@ -108,5 +115,10 @@ TibberPowerConsumptionAccessory.prototype.getTotalPowerConsumption = function (c
 };
 
 TibberPowerConsumptionAccessory.prototype.getServices = function () {
-    return [this.service];
+    const informationService = new Service.AccessoryInformation()
+        .setCharacteristic(Characteristic.Manufacturer, 'Neskvern')
+        .setCharacteristic(Characteristic.Model, 'HomeBridge Tibber')
+        .setCharacteristic(Characteristic.SerialNumber, '000')
+
+    return [this.service, informationService, this.loggingService];
 };
