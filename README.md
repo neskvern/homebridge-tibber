@@ -1,6 +1,8 @@
 # homebridge-tibber
 This is a [Homebridge](https://github.com/nfarina/homebridge) plugin getting Tibber power consumption data into HomeKit
 
+![Alt text](./tibber.png?raw=true "Tibber")
+
 ### Example Configuration
 ```
 
