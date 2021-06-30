@@ -1,5 +1,6 @@
 'use strict';
 
+
 const TibberFeed = require("tibber-api").TibberFeed;
 
 var inherits = require('util').inherits;
