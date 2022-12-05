@@ -1,6 +1,6 @@
 {
   "name": "homebridge-tibber",
-  "version": "0.0.24",
+  "version": "0.0.25",
   "description": "Gets Tibber power consumption data to HomeKit",
   "main": "index.js",
   "repository": {
