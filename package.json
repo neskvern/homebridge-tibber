@@ -1,6 +1,6 @@
 {
   "name": "homebridge-tibber",
-  "version": "0.0.23",
+  "version": "0.0.24",
   "description": "Gets Tibber power consumption data to HomeKit",
   "main": "index.js",
   "repository": {
@@ -23,7 +23,7 @@
   "license": "MIT",
   "dependencies": {
     "fakegato-history": "^0.6.1",
-    "tibber-api": "^2.3.0"
+    "tibber-api": "^5.0.0"
   },
   "engines": {
     "node": ">=0.12.0",

@@ -2,6 +2,7 @@
 
 
 const TibberFeed = require("tibber-api").TibberFeed;
+const TibberQuery = require("tibber-api").TibberQuery;
 
 var inherits = require('util').inherits;
 var Service, Characteristic;
@@ -24,7 +25,6 @@ function TibberPowerConsumptionAccessory(log, config) {
         active: true,
         apiEndpoint: {
             apiKey: config['apiKey'],
-            feedUrl: config['feedUrl'],
             queryUrl: config['queryUrl'],
         },
         // Query configuration.
@@ -80,7 +80,8 @@ function TibberPowerConsumptionAccessory(log, config) {
     
     var self = this;
 
-    const tibberFeed = new TibberFeed(self.options);
+    const tibberQuery = new TibberQuery(self.options);
+    const tibberFeed = new TibberFeed(tibberQuery);
     
     // Subscribe to "data" event.
     tibberFeed.on('data', data => {
@@ -102,9 +103,7 @@ function TibberPowerConsumptionAccessory(log, config) {
     });
     
     // Connect to Tibber data feed
-    tibberFeed.connect();
-
-    //tibberFeed.close();        
+    tibberFeed.connect();   
 }
 
 TibberPowerConsumptionAccessory.prototype.getPowerConsumption = function (callback) {
